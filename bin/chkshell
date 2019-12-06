@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#
+#######################################
+if [[ -f "${0%/*}/../lib/general.sh" ]]; then
+	. "${0%/*}/../lib/general.sh"
+else
+	echo "Error! lib/general.sh not found!"
+	exit 1
+fi
+#######################################
+shells=( $( grep '^/' /etc/shells ) )
+#######################################
+(($#<1)) && usage
+while getopts c:h opt; do
+	case $opt in
+		c)	c=$OPTARG;;
+		h)	usage;;
+	esac
+done
+#######################################
+for s in "${shells[@]}"; do
+	execute_command "$s" "$c" 2>&1
+done

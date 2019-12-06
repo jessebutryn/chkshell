@@ -12,7 +12,7 @@ whatis_sh () {
 	local s=${ln##*/}
 	local v
 	if [[ $sh != "$ln" ]]; then
-		get_shell_version "$sh"
+		get_shell_version "$ln"
 	else
 		v=$("$sh" --version)
 		if grep -q bash <<<"$v"; then
@@ -75,4 +75,12 @@ execute_command () {
 	printf 'exit code: %s\n' "$ec"
 	line_break '='
 	echo
+}
+filter_shells () {
+	local f=$1
+	shift
+	local -a sh=( "$@" )
+	for s in "${sh[@]}"; do
+		echo "$s" | grep "$f"
+	done
 }

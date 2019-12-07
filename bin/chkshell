@@ -15,12 +15,11 @@ shells=( $( grep '^/' /etc/shells ) )
 while getopts c:s:h opt; do
 	case $opt in
 		c)	c=$OPTARG;;
-		s)	s=$OPTARG;;
+		s)	shells=( $( filter_shells "$OPTARG" "${shells[@]}" ) );;
 		h)	usage;;
 	esac
 done
 #######################################
-[[ -n $s ]] && shells=( $( filter_shells "$s" "${shells[@]}" ) )
 for s in "${shells[@]}"; do
 	execute_command "$s" "$c" 2>&1
 done

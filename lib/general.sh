@@ -55,25 +55,43 @@ get_shell_version () {
 		pwsh)
 			"$spath" --version | egrep -o '([0-9]{1,}\.)+[0-9]{1,}'
 		;;
+		*)
+			printf 'Unknown shell: %s\n' "$spath" >&2
+		;;
 	esac
 }
 line_break () {
 	local s=$1
-	printf '%*s\n' 80 | tr ' ' "${s:--}"
+	printf '%*s\n' 80 | tr ' ' "${s:-=}"
 }
 execute_command () {
 	local sh=$1
 	local command=$2
 	echo
-	line_break '='
+	line_break
 	printf 'Command: %s\nShell: %s\nVersion: %s\n' \
-	"$c" "$s" "$(get_shell_version "$s")"
-	line_break
-	time "$sh" -c "$c"
+	"$command" "$sh" "$(get_shell_version "$sh")"
+	line_break -
+	time "$sh" -c "$command"
 	ec=$?
-	line_break
+	line_break -
 	printf 'exit code: %s\n' "$ec"
-	line_break '='
+	line_break
+	echo
+}
+execute_script () {
+	local sh=$1
+	local script=$2
+	echo
+	line_break
+	printf 'Script: %s\nShell: %s\nVersion: %s\n' \
+	"$script" "$sh" "$(get_shell_version "$sh")"
+	line_break -
+	time "$sh" "$script"
+	ec=$?
+	line_break -
+	printf 'exit code: %s\n' "$ec"
+	line_break
 	echo
 }
 filter_shells () {
